@@ -32,8 +32,8 @@ namespace GIVIX.Map
 
         private void Start()
         {
-            MapSet((10, 10, 2));
-            DrawMap(MapType.Desrt);
+            //MapSet((10, 10, 2));
+            //DrawMap(MapType.Desrt);
         }
 
         public void MapSet((int, int, int) mapValueGroup)
