@@ -41,7 +41,6 @@ public class PlayerMovementState : PlayerBaseState
 
     public override void ExitState()
     {
-        base.ExitState();
         Player.AnimatorCompo.SetBool(_movementHash, false);
         Player.InputReader.OnAttackEvent -= AttackHandle;
         Player.InputReader.OnAttackEndEvent -= AttackEndHandle;

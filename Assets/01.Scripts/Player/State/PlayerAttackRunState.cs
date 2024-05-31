@@ -15,6 +15,7 @@ public class PlayerAttackRunState : PlayerBaseState
 
     public override void EnterState()
     {
+        base.EnterState();
         Player.InputReader.OnRollEvent += RollHandle;
     }
 
@@ -26,6 +27,7 @@ public class PlayerAttackRunState : PlayerBaseState
 
     public override void ExitState()
     {
+        base.ExitState();
         Player.InputReader.OnRollEvent -= RollHandle;
     }
 }

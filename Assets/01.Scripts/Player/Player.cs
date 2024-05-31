@@ -34,7 +34,7 @@ public class Player : Entity
         StateController.RegisterState(new PlayerMovementState(StateController, "Movement"));
         StateController.RegisterState(new PlayerAttackState(StateController, "Attack"));
         StateController.RegisterState(new PlayerRollState(StateController, "Roll"));
-        StateController.RegisterState(new PlayerAttackRunState(StateController, ""));
+        StateController.RegisterState(new PlayerAttackRunState(StateController, "AttackRun"));
         StateController.ChangeState(typeof(PlayerIdleState));
     }
 
@@ -55,7 +55,7 @@ public class Player : Entity
             Vector3 targetPosition = hit.point;
             targetPosition.y = transform.position.y;
             
-            transform.LookAt(Vector3.Lerp(_beforeDir, targetPosition, Time.deltaTime));
+            transform.LookAt(Vector3.Lerp(_beforeDir, targetPosition, Time.deltaTime / 4));
             _beforeDir = targetPosition;
         }
     }

@@ -20,4 +20,9 @@ public abstract class PlayerBaseState : State
     {
         Controller.ChangeState(typeof(PlayerIdleState));
     }
+
+    protected virtual void AttackRunHandle()
+    {
+        Controller.ChangeState(typeof(PlayerAttackRunState));
+    }
 }

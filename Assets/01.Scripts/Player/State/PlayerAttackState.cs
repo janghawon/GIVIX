@@ -24,6 +24,7 @@ public class PlayerAttackState : PlayerBaseState
         
         Player.InputReader.OnRollEvent += RollHandle;
         Player.InputReader.OnAttackEndEvent += AttackEndHandle;
+        Player.InputReader.OnAttackRunEvent += AttackRunHandle;
 
         if (_runningRoutine is not null)
         {
@@ -45,6 +46,7 @@ public class PlayerAttackState : PlayerBaseState
                 _currentTime = 0;
             }
         }
+
     }
 
     public override void ExitState()
@@ -53,6 +55,7 @@ public class PlayerAttackState : PlayerBaseState
         base.ExitState();
         Player.InputReader.OnRollEvent -= RollHandle;
         Player.InputReader.OnAttackEndEvent -= AttackEndHandle;
+        Player.InputReader.OnAttackRunEvent -= AttackRunHandle;
     }
 
     private void Attack()

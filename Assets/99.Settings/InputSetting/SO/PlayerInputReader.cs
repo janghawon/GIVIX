@@ -46,13 +46,11 @@ public class PlayerInputReader : InputReader, InputControl.IPlayerActions
         {
             _isOnAttackRun = true;
             OnAttackRunEvent?.Invoke();
-            return;
         }
 
         if (movementInput.sqrMagnitude <= 0.03f && _isOnAttackRun)
         {
             OnAttackRunEndEvent?.Invoke();
-            return;
         }
 
         if (context.started)
