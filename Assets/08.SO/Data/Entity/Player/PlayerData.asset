@@ -9,22 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc50824ae41a4d73a7e85fcec532db42, type: 3}
+  m_Script: {fileID: 11500000, guid: 4db13bc71a8246144ac2a9aa571ef17d, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   maxHp: 10
-  movementSpeed: 10
-  rotateSpeed: 0
-  damage: 10
-  attackRadius: 1
-  attackDistance: 5
-  maxAttackCount: 100
-  comboWindowTime: 0.1
-  attackDelayTimes: []
-  attackAdvances: []
-  rollTime: 0.2
-  rollSpeed: 1
-  shieldMovementSpeed: 0
-  shieldKnockBackPower: 0
-  shieldCanBlockAngle: 0
-  shieldCanBlockDamage: 0
+  movementSpeed: 6
+  rotateSpeed: 6
+  damage: 40
+  attackMovementSpeed: 2
+  attackTurm: 0.1

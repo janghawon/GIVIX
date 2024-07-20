@@ -8,6 +8,11 @@ public class PoolManager : MonoSingleton<PoolManager>
 
     private Dictionary<string, Pool> _pools;
 
+    private void Awake()
+    {
+        Init();
+    }
+
     public override void Init()
     {
         base.Init();

@@ -3,107 +3,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Entity
+[Serializable]
+public struct PlayerBaseCompoElementGroup
 {
-    [SerializeField] private PlayerInputReader _inputReader;
-    public PlayerInputReader InputReader => _inputReader;
+    public LayerMask groundMask;
+}
 
-    [SerializeField] private float _layerTransitionTime = 0.1f;
-    
-    [SerializeField] private LayerMask _groundMask;
-    [SerializeField] private LayerMask _enemyMask;
+public partial class Player : Entity
+{
+    [Header("Player Base")]
+    [SerializeField] private PlayerBaseCompoElementGroup _baseElementGroup;
 
-    public PlayerData PlayerData => (PlayerData)Data;
+    public Quaternion LookDir { get; private set; } 
 
-    public int PlayerAttackComboCounter { get; set; }
-    private Vector3 _beforeDir;
-
-    #region Gizmos Control Variable
-    #if UNITY_EDITOR
-    [Space(10)] [Header("For Gizmos")]
-    [SerializeField] private bool _drawAttackRange;
-    [SerializeField] private bool _drawBlockRange;
-    #endif    
-    #endregion
-
-    public override void Awake()
+    protected override void Awake()
     {
         base.Awake();
-        PlayerAttackComboCounter = 0;
-        StateController.RegisterState(new PlayerIdleState(StateController, "Idle"));
-        StateController.RegisterState(new PlayerMovementState(StateController, "Movement"));
-        StateController.RegisterState(new PlayerAttackState(StateController, "Attack"));
-        StateController.RegisterState(new PlayerRollState(StateController, "Roll"));
-        StateController.RegisterState(new PlayerAttackRunState(StateController, "AttackRun"));
-        StateController.ChangeState(typeof(PlayerIdleState));
+        _stateController.ChangeState(EntityState.Idle);
     }
 
-    public override void Update()
+    protected override void Update()
     {
         base.Update();
-        LookPointDir();
+
+        if (IsDead()) return;
+
+        LookPointer();
+        CreateCartridgeParticle();
     }
 
-    private void LookPointDir()
+    private void LookPointer()
     {
-        Vector3 mousePosition = Input.mousePosition;
-        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-        RaycastHit hit;
+        Vector2 screenPos = _inputReader.MouseInput;
+        Ray cameraRay = Camera.main.ScreenPointToRay(screenPos);
+        float rayDistance = Camera.main.farClipPlane;
 
-        if (Physics.Raycast(ray, out hit))
+        bool isHit = Physics.Raycast(cameraRay, out var hit, rayDistance, _baseElementGroup.groundMask);
+
+        if (isHit)
         {
-            Vector3 targetPosition = hit.point;
-            targetPosition.y = transform.position.y;
-            
-            transform.LookAt(Vector3.Lerp(_beforeDir, targetPosition, Time.deltaTime / 4));
-            _beforeDir = targetPosition;
+            Vector3 dir = hit.point - transform.position;
+            dir.Normalize();
+
+            Quaternion rotation = Quaternion.LookRotation(dir);
+            rotation.eulerAngles = new Vector3(rotation.eulerAngles.x, rotation.eulerAngles.y + (_inputReader.IsOnAttack ? 50 : 0));
+
+            LookDir = rotation;
+
+            Rotate(LookDir);
         }
     }
-
-    public override void OnDamage(float damage, Vector3 attackedDir)
-    {
-        base.OnDamage(damage, attackedDir);
-    }
-
-    public List<IDamageable> GetDamageableObjects(out List<Vector3> points)
-    {
-        var cols = new Collider[PlayerData.maxAttackCount];
-        var result = new List<IDamageable>();
-        var center = transform.position + CharacterControllerCompo.center + ModelTrm.forward * PlayerData.attackDistance;
-        var count = Physics.OverlapSphereNonAlloc(center, PlayerData.attackRadius, cols, _enemyMask);
-
-        points = new List<Vector3>();
-        for (var i = 0; i < count; i++)
-        {
-            if (cols[i].TryGetComponent<IDamageable>(out var damageable))
-            {
-                points.Add(cols[i].ClosestPointOnBounds(center));
-                result.Add(damageable);
-            }
-        }
-
-        return result;
-    }
-    
-#if UNITY_EDITOR
-
-    private void OnDrawGizmos()
-    {
-        if (Data is null)
-        {
-            return;
-        }
-
-        if (_drawAttackRange)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(
-                transform.position + GetComponent<CharacterController>().center +
-                transform.Find("Model").forward * PlayerData.attackDistance,
-                PlayerData.attackRadius
-            );
-        }
-    }
-
-#endif
 }

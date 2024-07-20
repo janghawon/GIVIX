@@ -8,7 +8,7 @@ public class PoolableParticle : PoolableMono
 
     private void Awake()
     {
-        _particleSystem = GetComponent<ParticleSystem>();
+        _particleSystem = GetComponentInChildren<ParticleSystem>();
     }
 
     public void SetPositionAndRotation(Vector3 pos = default, Quaternion rot = default)

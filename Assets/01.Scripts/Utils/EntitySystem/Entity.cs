@@ -1,95 +1,74 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(CharacterController))]
-public class Entity : PoolableMono, IDamageable
+public abstract class Entity : PoolableMono
 {
-    [SerializeField] private EntityData _data;
-    public EntityData Data => _data;
+    [Header("Entity Base")]
+    [SerializeField] protected EntityData _entityData;
+    [SerializeField] protected InputReader _inputReader;
+    [SerializeField] protected Transform _visualTrm;
 
-    public Transform ModelTrm { get; private set; }
+    protected StateController _stateController;
 
-    public CharacterController CharacterControllerCompo { get; private set; }
-    public Animator AnimatorCompo { get; private set; }
-    
-    protected StateController StateController { get; private set; }
+    protected Animator _animator;
+    public Animator Animator => _animator;
 
-    private float _currentHp;
+    protected CharacterController _characterController;
+    public CharacterController CharacterController => _characterController;
 
-    public float lastAttackTime;
-    
-    public bool IsDead { get; private set; }
-
-    public event Action<Vector3> OnHitEvent = null;
-
-    public virtual void Awake()
-    {
-        ModelTrm = transform.Find("Model");
-        
-        CharacterControllerCompo = GetComponent<CharacterController>();
-        AnimatorCompo = ModelTrm.GetComponent<Animator>();
-
-        StateController = new StateController(this);
-    }
-
-    public virtual void Update()
-    {
-        StateController.UpdateState();
-    }
-    
     public override void OnPop()
     {
-        IsDead = false;
-        _currentHp = _data.maxHp;
     }
 
     public override void OnPush()
     {
-        OnHitEvent = null;
     }
 
-    public virtual void Move(Vector3 velocity)
+    public void Rotate(Quaternion targetRot, float rotSpeed = -1)
     {
-        CharacterControllerCompo.Move(velocity * Time.deltaTime);
-    }
-    
-    public virtual void StopImmediately()
-    {
-        CharacterControllerCompo.Move(Vector3.zero);
-    }
-    
-    public void Rotate(Quaternion targetRot, float speed = -1)
-    {
-        ModelTrm.rotation = Quaternion.Lerp(ModelTrm.rotation, targetRot, speed < 0 ? Data.rotateSpeed : speed);
+        float speed = rotSpeed < 0 ? _entityData.rotateSpeed : rotSpeed;
+
+        _visualTrm.rotation = 
+        Quaternion.Lerp
+        (
+            _visualTrm.rotation, 
+            targetRot, 
+            speed * Time.deltaTime
+        );
     }
 
-    public void AnimationTrigger(string eventKey)
+    protected virtual void Awake()
     {
-        StateController.CurrentState.AnimationTrigger(eventKey);
-    }
+        _stateController = new StateController(_inputReader);
+        _animator = GetComponentInChildren<Animator>();
+        _characterController = GetComponent<CharacterController>();
 
-    public virtual void OnDamage(float damage, Vector3 attackedDir)
-    {
-        if (IsDead)
+        var myClassName = this.GetType().Name;
+
+        foreach (var stateType in Enum.GetValues(typeof(EntityState)))
         {
-            return;
-        }
-        
-        _currentHp -= damage;
-        OnHitEvent?.Invoke(attackedDir);
-        if (_currentHp <= 0)
-        {
-            OnDead();
+            Type type = Type.GetType($"{myClassName}{stateType}State");
+
+            if (type == null) continue;
+
+            var parameters = new object[4] { stateType, _entityData, _stateController, this };
+            Activator.CreateInstance(type, parameters);
         }
     }
-    
-    protected virtual void OnDead()
+
+    protected virtual void Update()
     {
-        IsDead = true;
+        if(_stateController.OnControlling)
+        {
+            _stateController.CurrentState.Update();
+        }
     }
-    
-    bool IDamageable.IsDead()
+
+    public void Move(Vector3 velocity)
     {
-        return IsDead;
+        CharacterController.Move(velocity * Time.deltaTime);
     }
 }

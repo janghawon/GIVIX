@@ -37,7 +37,7 @@ namespace GIVIX.Map
 
             foreach (MapTileType mtt in Enum.GetValues(typeof(MapTileType)))
             {
-                MapTile mapTile = new MapTile();
+                var mapTile = new MapTile();
 
                 mapTile.TileType = mtt;
                 _mapTilesDic.Add(mtt, mapTile);
@@ -53,11 +53,11 @@ namespace GIVIX.Map
             _obstacleArr = new MapTile[mapValueGroup.Item1,
                                        mapValueGroup.Item2];
 
-            for(int i = 0; i < _mapTileArr.GetLength(2); i++)
+            for(var i = 0; i < _mapTileArr.GetLength(2); i++)
             {
-                for(int j = 0; j < _mapTileArr.GetLength(1); j++)
+                for(var j = 0; j < _mapTileArr.GetLength(1); j++)
                 {
-                    for(int k = 0; k < _mapTileArr.GetLength(0); k++)
+                    for(var k = 0; k < _mapTileArr.GetLength(0); k++)
                     {
                         MapTileType mtt;
 
@@ -76,9 +76,9 @@ namespace GIVIX.Map
                 }
             }
 
-            for(int i = 0; i < _obstacleArr.GetLength(0); i++)
+            for(var i = 0; i < _obstacleArr.GetLength(0); i++)
             {
-                for(int j = 0; j < _obstacleArr.GetLength(1); j++)
+                for(var j = 0; j < _obstacleArr.GetLength(1); j++)
                 {
                     if (Random.Range(0, 20) > 4) continue;
 
