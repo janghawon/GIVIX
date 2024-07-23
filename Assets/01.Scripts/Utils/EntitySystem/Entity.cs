@@ -10,6 +10,7 @@ public abstract class Entity : PoolableMono
     [SerializeField] protected EntityData _entityData;
     [SerializeField] protected InputReader _inputReader;
     [SerializeField] protected Transform _visualTrm;
+    public Transform VisualTrm => _visualTrm;
 
     protected StateController _stateController;
 
@@ -18,6 +19,9 @@ public abstract class Entity : PoolableMono
 
     protected CharacterController _characterController;
     public CharacterController CharacterController => _characterController;
+
+    protected Rigidbody _rigidBody;
+    public Rigidbody Rigidbody => _rigidBody;
 
     public override void OnPop()
     {
@@ -43,8 +47,10 @@ public abstract class Entity : PoolableMono
     protected virtual void Awake()
     {
         _stateController = new StateController(_inputReader);
+
         _animator = GetComponentInChildren<Animator>();
         _characterController = GetComponent<CharacterController>();
+        _rigidBody = GetComponentInChildren<Rigidbody>();
 
         var myClassName = this.GetType().Name;
 

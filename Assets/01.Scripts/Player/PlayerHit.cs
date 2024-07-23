@@ -9,7 +9,7 @@ public partial class Player : IHitable
         return false;
     }
 
-    public void OnDamage(float damage, Vector3 attackedDir)
+    public void OnDamage(float damage, Vector3 hitPoint, Vector3 attackedDir)
     {
     }
 }

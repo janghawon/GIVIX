@@ -42,11 +42,24 @@ public partial class Player : Entity
 
         if (isHit)
         {
-            Vector3 dir = hit.point - transform.position;
+            Vector3 dir;
+            
+            if(_inputReader.IsOnAttack)
+            {
+                //Vector3 point = hit.point;
+                //point.y = _attackElementGroup.fireTrm.position.y;
+
+                //dir = point - _attackElementGroup.fireTrm.position;
+                dir = _attackElementGroup.fireTrm.forward;
+            }
+            else
+            {
+                dir = hit.point - transform.position;
+            }
+
             dir.Normalize();
 
             Quaternion rotation = Quaternion.LookRotation(dir);
-            rotation.eulerAngles = new Vector3(rotation.eulerAngles.x, rotation.eulerAngles.y + (_inputReader.IsOnAttack ? 50 : 0));
 
             LookDir = rotation;
 
