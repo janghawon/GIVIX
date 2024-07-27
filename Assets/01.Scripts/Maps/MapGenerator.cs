@@ -41,7 +41,7 @@ namespace GIVIX.Map
             _mapValueGroup = mapValueGroup;
         }
 
-        public void DrawMap(MapType mapType)
+        public void DrawMap(MapType mapType, Vector3 position)
         {
             MapDrawer drawer = _mapDrawerArr.FirstOrDefault(x => x.mapType == mapType);
 
@@ -50,7 +50,7 @@ namespace GIVIX.Map
                 Debug.LogError($"ERROR : {mapType}'s drawer has not exist.");
             }
 
-            drawer.CreateMap(_mapValueGroup);
+            drawer.CreateMap(_mapValueGroup, position);
         }
     }
 }

@@ -42,27 +42,12 @@ public partial class Player : Entity
 
         if (isHit)
         {
-            Vector3 dir;
-            
-            if(_inputReader.IsOnAttack)
-            {
-                //Vector3 point = hit.point;
-                //point.y = _attackElementGroup.fireTrm.position.y;
+            Vector3 point = new Vector3(hit.point.x, transform.position.y, hit.point.z);
 
-                //dir = point - _attackElementGroup.fireTrm.position;
-                dir = _attackElementGroup.fireTrm.forward;
-            }
-            else
-            {
-                dir = hit.point - transform.position;
-            }
-
+            Vector3 dir = point - transform.position;
             dir.Normalize();
-
-            Quaternion rotation = Quaternion.LookRotation(dir);
-
+            Quaternion rotation = Quaternion.LookRotation(-dir);
             LookDir = rotation;
-
             Rotate(LookDir);
         }
     }

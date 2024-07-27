@@ -35,10 +35,10 @@ public abstract class Entity : PoolableMono
     {
         float speed = rotSpeed < 0 ? _entityData.rotateSpeed : rotSpeed;
 
-        _visualTrm.rotation = 
+        transform.rotation = 
         Quaternion.Lerp
         (
-            _visualTrm.rotation, 
+            transform.rotation, 
             targetRot, 
             speed * Time.deltaTime
         );

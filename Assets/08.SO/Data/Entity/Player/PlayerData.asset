@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: 
   maxHp: 10
-  movementSpeed: 6
+  movementSpeed: 2
   rotateSpeed: 8.83
   damage: 40
-  attackMovementSpeed: 2
+  attackMovementSpeed: 1
   attackTurm: 0.1
   rollDistance: 3
   rollDuration: 1
