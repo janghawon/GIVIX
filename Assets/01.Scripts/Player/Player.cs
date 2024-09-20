@@ -15,11 +15,14 @@ public partial class Player : Entity
     [SerializeField] private PlayerBaseCompoElementGroup _baseElementGroup;
 
     public Quaternion LookDir { get; private set; } 
+    public CursorConrtroller CursorController { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
         _stateController.ChangeState(EntityState.Idle);
+
+        CursorController = GetComponent<CursorConrtroller>();
     }
 
     protected override void Update()
