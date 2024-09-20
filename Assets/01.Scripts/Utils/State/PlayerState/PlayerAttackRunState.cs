@@ -27,6 +27,9 @@ public class PlayerAttackRunState : State
         _reader.OnAttackEndEvent += ChangeState;
 
         _owner.Animator.SetBool(_attakRunHash, true);
+
+        if (!_player.CursorController.IsCursorActive)
+            _player.CursorController.VisableCursor();
     }
 
     public override void Exit()
@@ -35,6 +38,7 @@ public class PlayerAttackRunState : State
         _reader.OnAttackEndEvent -= ChangeState;
 
         _owner.Animator.SetBool(_attakRunHash, false);
+        _player.CursorController.UnVisibleCursor();
     }
 
     public override void Update()
